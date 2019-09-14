@@ -20,11 +20,14 @@ public:
 	~Greedy_Cutting_Task() = default;
 	size_t greedy_algorithm();
 	void init() {
-		std::sort(b.begin(), b.end());
+		std::sort(b.begin(), b.end(), [](const T& a, const T& b) {return a > b; });
 		x = std::vector<size_t>(n, 0);
 	}
-	size_t solve(IPermutation<T>* permutation) {
-		permutation->get_permutation(b);
+	size_t solve(IPermutation<T>* permutation = nullptr) {
+		if (permutation == nullptr)
+			init();
+		else
+			permutation->get_permutation(b);
 		return greedy_algorithm();
 	}
 	std::vector<size_t> get_solution() { return x; }

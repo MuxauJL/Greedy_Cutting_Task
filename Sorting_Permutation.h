@@ -4,23 +4,35 @@ template<typename T>class Sorting_Permutation :
 	public IPermutation<T>
 {
 private:
-	short w;
-	size_t n;
+	T A;
 public:
-	Sorting_Permutation(size_t n, short w) {
-		if (n > 0)
-			this->n = n;
-		else throw std::invalid_argument("n must be > 0");
-		if (w >= 0 || w <= 100)
-			this->w = w;
-		else throw std::invalid_argument("w must be in [0;100]");
+	Sorting_Permutation(T A) {
+		if (A > 0)
+			this->A = A;
+		else throw std::invalid_argument("A must be > 0");
 	}
 	~Sorting_Permutation() = default;
 	virtual void get_permutation(std::vector<T>& arr) {
-		size_t k = w * n / 100;
-		auto bound = std::next(arr.begin(), k);
-		std::sort(arr.begin(), bound, [](const T& a, const T& b) {return a > b; });
-		if (k < n)
-			std::sort(bound + 1, arr.end());
+		std::sort(arr.begin(), arr.end(), [](const T& a, const T& b) {return a > b; });
+		T sum = 0;
+		for (size_t i = 0; i < arr.size(); ++i) {
+			if (sum + arr[i] > A) {
+				for (size_t j = arr.size() - 1; j > i; --j) {
+					if (sum + arr[j] <= A) {
+						T tmp = arr[j];
+						arr[j] = arr[i];
+						arr[i] = tmp;
+						++i;
+						sum += arr[j];
+					}
+					else {
+						sum = 0;
+						break;
+					}
+				}
+			}
+			else
+				sum += arr[i];
+		}
 	}
 };

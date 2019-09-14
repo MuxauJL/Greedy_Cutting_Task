@@ -1,5 +1,4 @@
 #include "Greedy_Cutting_Task.h"
-#include "Basic_Permutation.h"
 #include "Sorting_Permutation.h"
 #include "Brute_Force_Permutation.h"
 #include <string>
@@ -52,39 +51,33 @@ int main() {
 			Greedy_Cutting_Task task(A, n, b);
 			std::cout
 				<< "|" << std::setw(2) << i + 1;
-			double lower_bound= task.get_lower_bound();
+			double lower_bound = task.get_lower_bound();
 			std::cout
 				<< "|" << std::setw(11) << lower_bound;
-			task.init();
-			Basic_Permutation<size_t> basic_permutation;
-			double basic = task.solve(&basic_permutation);
+			double basic = task.solve();
 			std::cout
 				<< "|" << std::setw(3) << basic
-				<< "|" << std::setw(7)  <<std::setprecision(3) <<(basic - lower_bound) / basic;
-			task.init();
-			double record_sorting = n;
-			for (int w = 0; w < 100; ++w) {
-				Sorting_Permutation<size_t> sorting_permutation(n, w);
-				double sorting = task.solve(&sorting_permutation);
-				if (record_sorting > sorting)
-					record_sorting = sorting;
-			}
+				<< "|" << std::setw(7) << std::setprecision(3) << (basic - lower_bound) / basic;
+			Sorting_Permutation<size_t> sorting_permutation(A);
+			double sorting = task.solve(&sorting_permutation);
 			std::cout
-				<< "|" << std::setw(3) << record_sorting
-				<< "|" << std::setw(9) <<  std::setprecision(3) << (record_sorting - lower_bound) / record_sorting
-				<< "|" << std::setw(9) <<  std::setprecision(3) << (basic - record_sorting) / basic;
-			task.init();
-			Brute_Force_Permutation<size_t> brute_force_permutation;
+				<< "|" << std::setw(3) << sorting
+				<< "|" << std::setw(9) << std::setprecision(3) << (sorting - lower_bound) / sorting
+				<< "|" << std::setw(9) << std::setprecision(3) << (basic - sorting) / basic;
 			double record_brute_force = n;
-			for (int k = 0; k < N; ++k) {
-				size_t brute_force=task.solve(&brute_force_permutation);
-				if (record_brute_force > brute_force)
-					record_brute_force = brute_force;
+			for (short w = 0; w < 100; ++w) {
+				Brute_Force_Permutation<size_t> brute_force_permutation(w);
+				task.init();
+				for (int k = 0; k < N; ++k) {
+					size_t brute_force = task.solve(&brute_force_permutation);
+					if (record_brute_force > brute_force)
+						record_brute_force = brute_force;
+				}
 			}
 			std::cout
 				<< "|" << std::setw(3) << record_brute_force
-				<< "|" << std::setw(9)  << std::setprecision(3) << (record_brute_force - lower_bound) / record_brute_force
-				<< "|" << std::setw(9)  << std::setprecision(3) << (basic - record_brute_force) / basic << "|\n";
+				<< "|" << std::setw(9) << std::setprecision(3) << (record_brute_force - lower_bound) / record_brute_force
+				<< "|" << std::setw(9) << std::setprecision(3) << (basic - record_brute_force) / basic << "|\n";
 		}
 		else throw std::exception("filename is wrong");
 		in.close();
