@@ -6,5 +6,7 @@ template<typename T> class Brute_Force_Permutation :
 public:
 	Brute_Force_Permutation() = default;
 	~Brute_Force_Permutation() = default;
-	virtual void get_permutation(std::vector<T>&) {};
+	virtual void get_permutation(std::vector<T>& arr) { 
+		std::next_permutation(arr.begin(), arr.end());
+	}
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "IPermutation.h"
 #include <algorithm>
+#include <numeric>
 
 template<typename T = size_t>class Greedy_Cutting_Task
 {
@@ -18,11 +19,16 @@ public:
 	}
 	~Greedy_Cutting_Task() = default;
 	size_t greedy_algorithm();
+	void init() {
+		std::sort(b.begin(), b.end());
+		x = std::vector<size_t>(n, 0);
+	}
 	size_t solve(IPermutation<T>* permutation) {
 		permutation->get_permutation(b);
 		return greedy_algorithm();
 	}
 	std::vector<size_t> get_solution() { return x; }
+	double get_lower_bound() { return std::accumulate(b.begin(), b.end(), 0) / A; }
 };
 
 template<typename T>
