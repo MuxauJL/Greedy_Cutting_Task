@@ -31,7 +31,10 @@ public:
 		return greedy_algorithm();
 	}
 	std::vector<size_t> get_solution() { return x; }
-	double get_lower_bound() { return std::accumulate(b.begin(), b.end(), 0) / A; }
+	T get_lower_bound() {
+		auto sum = std::accumulate(b.begin(), b.end(), 0);
+		return  sum % A > 0 ? sum / A + 1 : sum / A;
+	}
 };
 
 template<typename T>

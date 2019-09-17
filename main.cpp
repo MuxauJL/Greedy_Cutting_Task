@@ -36,10 +36,11 @@ int main() {
 		return std::stoi(filename.substr(begin, end - begin));
 	};
 
+	double avgs[] = { 0,0,0,0,0 };
 	std::cout
-		<< " __________________________________________________________________________\n"
-		<< "| N|lower bound|      Basic|                Sorting|            Brute Force|\n"
-		<< "|  |           |res|(b-l)/b|res|  (r-l)/l|  (b-r)/b|res|  (r-l)/l|  (b-r)/b|\n";
+		<< "------------------------------------------------------------------------------\n"
+		<< "| N|lower bound|        Basic|                Sorting|            Brute Force|\n"
+		<< "|  |           |res|  (b-l)/b|res|  (r-l)/l|  (b-r)/b|res|  (r-l)/l|  (b-r)/b|\n";
 	for (int i = 0; i < files.size(); ++i) {
 		std::ifstream in(dir + files[i]);
 		if (in.is_open()) {
@@ -48,7 +49,7 @@ int main() {
 			b = std::vector<size_t>();
 			b.reserve(n);
 			std::copy(std::istream_iterator<size_t>(in), {}, std::back_inserter(b));
-			Greedy_Cutting_Task task(A, n, b);
+			Greedy_Cutting_Task<> task(A, n, b);
 			std::cout
 				<< "|" << std::setw(2) << i + 1;
 			double lower_bound = task.get_lower_bound();
@@ -57,7 +58,7 @@ int main() {
 			double basic = task.solve();
 			std::cout
 				<< "|" << std::setw(3) << basic
-				<< "|" << std::setw(7) << std::setprecision(3) << (basic - lower_bound) / basic;
+				<< "|" << std::setw(9) << std::setprecision(3) << (basic - lower_bound) / basic;
 			Sorting_Permutation<size_t> sorting_permutation(A);
 			double sorting = task.solve(&sorting_permutation);
 			std::cout
@@ -78,9 +79,29 @@ int main() {
 				<< "|" << std::setw(3) << record_brute_force
 				<< "|" << std::setw(9) << std::setprecision(3) << (record_brute_force - lower_bound) / record_brute_force
 				<< "|" << std::setw(9) << std::setprecision(3) << (basic - record_brute_force) / basic << "|\n";
+			avgs[0] += (basic - lower_bound) / basic;
+			avgs[1] += (sorting - lower_bound) / sorting;
+			avgs[2] += (basic - sorting) / basic;
+			avgs[3] += (record_brute_force - lower_bound) / record_brute_force;
+			avgs[4] += (basic - record_brute_force) / basic;
 		}
 		else throw std::exception("filename is wrong");
 		in.close();
 	}
+	for (auto& e : avgs)
+		e /= n;
+
+	std::cout
+		<< "------------------------------------------------------------------------------\n"
+		<< "|" << std::setw(18) << "Average values"
+		<< "|" << std::setw(9) << std::setprecision(3) << avgs[0]
+		<< "|" << std::setw(3) << " "
+		<< "|" << std::setw(9) << std::setprecision(3) << avgs[1]
+		<< "|" << std::setw(9) << std::setprecision(3) << avgs[2]
+		<< "|" << std::setw(3) << " "
+		<< "|" << std::setw(9) << std::setprecision(3) << avgs[3]
+		<< "|" << std::setw(9) << std::setprecision(3) << avgs[4] << "|\n";
+
+	system("pause");
 	return 0;
 }

@@ -27,6 +27,11 @@ public:
 					}
 					else {
 						sum = 0;
+						if (j < arr.size() - 1) {
+							T tmp = arr[arr.size() - 1];
+							arr[arr.size() - 1] = arr[i + 1];
+							arr[i + 1] = tmp;
+						}
 						break;
 					}
 				}
